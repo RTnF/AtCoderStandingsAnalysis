@@ -64,6 +64,7 @@ $(function () {
     const cols = ["#808080", "#804000", "#008000", "#00C0C0", "#0000FF", "#C0C000", "#FF8000", "#FF0000"];
     const threshold = [-10000, 400, 800, 1200, 1600, 2000, 2400, 2800];
     const canvasWidth = 250;
+    const canvasHeight = 20;
 
     $('#acsa-table > tbody').empty();
     for (let i = 0; i < task.length; i++) {
@@ -75,7 +76,7 @@ $(function () {
   <td>` + vueStandings.ac[i] + ` / ` + vueStandings.tries[i] + `</td>
   <td>` + (isTried ? (vueStandings.ac[i] / vueStandings.tries[i] * 100).toFixed(2) + "%" : "-") + `</td>
   <td>-</td>
-  <td><canvas width="` + canvasWidth + `px" height="20px"></canvas></td>
+  <td><canvas width="` + canvasWidth + `px" height="` + canvasHeight +`px"></canvas></td>
 </tr>
       `);
       if (!isTried) {
@@ -95,6 +96,7 @@ $(function () {
           if (data[j].UserScreenName === vueStandings.userScreenName) {
             myScore = result.Score;
           }
+          // 赤い括弧内の数字
           if (result.Score === 0) {
             avePenalty += result.Failure;
           } else {
@@ -127,8 +129,9 @@ $(function () {
         var context = canvas.getContext('2d');
         for (let k = 0; k < 8; k++) {
           context.fillStyle = cols[k];
+          // 色の境界から右端までの矩形描画
           var x = Math.round(countLower(rates, threshold[k]) / rates.length * canvasWidth);
-          context.fillRect(x, 0, canvasWidth - x, 20);
+          context.fillRect(x, 0, canvasWidth - x, canvasHeight);
         }
       }
     }
