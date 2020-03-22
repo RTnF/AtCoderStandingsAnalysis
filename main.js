@@ -25,12 +25,13 @@ function countLower(arr, val) {
 }
 
 // 換算: Rating -> innerRating
-function innerRating(rate) {
-  if (rate < 400) {
-    rate = 400 * (1 - Math.log(400 / rate));
+function innerRating(rate, comp) {
+  var ret = rate;
+  if (ret < 400) {
+    ret = 400 * (1 - Math.log(400 / rate));
   }
-  rate += 1200 * (Math.sqrt(1 - Math.pow(0.81, data[j].Competitions)) / (1 - Math.pow(0.9, data[j].Competitions)) - 1) / (Math.sqrt(19) - 1);
-  return rate;
+  ret += 1200 * (Math.sqrt(1 - Math.pow(0.81, comp)) / (1 - Math.pow(0.9, comp)) - 1) / (Math.sqrt(19) - 1);
+  return ret;
 }
 
 $(function () {
@@ -110,7 +111,7 @@ $(function () {
         if (data[j].Competitions > 0
         &&  data[j].TaskResults[task[i].TaskScreenName]
         &&  data[j].TaskResults[task[i].TaskScreenName].Score === maxScore) {
-          rates.push(innerRating(data[j].Rating));
+          rates.push(innerRating(data[j].Rating, data[j].Competitions));
         }
       }
       rates.sort(function (a, b) { return a - b; });
