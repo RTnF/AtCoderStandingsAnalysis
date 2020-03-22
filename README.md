@@ -21,10 +21,16 @@ I welcome your bug reports and requests: [issue](https://github.com/RTnF/AtCoder
 
 ## 更新履歴
 
-### v0.1.0
+### v0
+
+#### v0.1.1
+
+- 内部レートでNaNが発生していたのを修正
+
+#### v0.1.0
 
 - 順位表にフィルターをかけたとき、上の表も対応
 
-### v0.0.0
+#### v0.0.0
 
 - 仮
