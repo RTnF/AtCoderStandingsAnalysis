@@ -1,12 +1,13 @@
 // ==UserScript==
 // @name         AtCoderStandingsAnalysis
 // @namespace    https://github.com/RTnF/AtCoderStandingsAnalysis
-// @version      0.1.0
+// @version      0.1.1
 // @description  順位表のjsonを集計し、上部にテーブルを追加します。
 // @author       RTnF
 // @match        https://atcoder.jp/*standings*
 // @exclude      https://atcoder.jp/*standings/json
 // @grant        none
+// @license      CC0-1.0
 // ==/UserScript==
 
 // ソート済み配列のうちval未満が何個あるか求める
@@ -27,6 +28,9 @@ function countLower(arr, val) {
 // 換算: Rating -> innerRating
 function innerRating(rate, comp) {
   var ret = rate;
+  if (rate <= 0) {
+    throw "rate <= 0";
+  }
   if (ret < 400) {
     ret = 400 * (1 - Math.log(400 / rate));
   }
@@ -103,6 +107,10 @@ $(function () {
         if (!data[j].TaskResults) {
           continue;
         }
+        // アカウント削除
+        if (data[j].UserIsDeleted) {
+          continue;
+        }
         var result = data[j].TaskResults[task[i].TaskScreenName];
         // 未提出のときresult === undefined
         if (result) {
@@ -120,17 +128,17 @@ $(function () {
           }
         }
       }
-      
+
       // 正解者の内部レート配列を作成する
       for (let j = 0; j < data.length; j++) {
         if (data[j].Competitions > 0
         &&  data[j].TaskResults[task[i].TaskScreenName]
         &&  data[j].TaskResults[task[i].TaskScreenName].Score === maxScore) {
-          rates.push(innerRating(data[j].Rating, data[j].Competitions));
+          rates.push(innerRating(Math.max(data[j].Rating, 1), data[j].Competitions));
         }
       }
       rates.sort(function (a, b) { return a - b; });
-      
+
       myScore /= 100;
       maxScore /= 100;
       avePenalty /= vueStandings.tries[i];
