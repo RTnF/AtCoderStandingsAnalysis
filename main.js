@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         AtCoderStandingsAnalysis
 // @namespace    https://github.com/RTnF/AtCoderStandingsAnalysis
-// @version      0.0.0
+// @version      0.1.0
 // @description  順位表のjsonを集計し、上部にテーブルを追加します。
 // @author       RTnF
 // @match        https://atcoder.jp/*standings*
@@ -48,6 +48,7 @@ $(function () {
       <th>人数</th>
       <th>正解率</th>
       <th>平均ペナ</th>
+      <th>ペナ率</th>
       <th>レート</th>
     </tr>
     </thead>
@@ -59,8 +60,13 @@ $(function () {
 
   // 表の更新
   setInterval(function () {
-    var data = vueStandings.standings.StandingsData;
+    var data;
     var task = vueStandings.standings.TaskInfo;
+    if (vueStandings.filtered) {
+      data = vueStandings.filteredStandings;
+    } else {
+      data = vueStandings.standings.StandingsData;
+    }
     const cols = ["#808080", "#804000", "#008000", "#00C0C0", "#0000FF", "#C0C000", "#FF8000", "#FF0000"];
     const threshold = [-10000, 400, 800, 1200, 1600, 2000, 2400, 2800];
     const canvasWidth = 250;
@@ -76,6 +82,7 @@ $(function () {
   <td>` + vueStandings.ac[i] + ` / ` + vueStandings.tries[i] + `</td>
   <td>` + (isTried ? (vueStandings.ac[i] / vueStandings.tries[i] * 100).toFixed(2) + "%" : "-") + `</td>
   <td>-</td>
+  <td>-</td>
   <td><canvas width="` + canvasWidth + `px" height="` + canvasHeight +`px"></canvas></td>
 </tr>
       `);
@@ -86,10 +93,16 @@ $(function () {
       // トップの得点を満点とみなす
       var maxScore = -1;
       var myScore = -1;
-      // ペナルティ数 / 提出者数
+      // 不正解数 / 提出者数
       var avePenalty = 0;
+      // ペナルティ >= 1 の人数 / 提出者数
+      var ratioPenalty = 0;
       var rates = [];
       for (let j = 0; j < data.length; j++) {
+        // 参加登録していない
+        if (!data[j].TaskResults) {
+          continue;
+        }
         var result = data[j].TaskResults[task[i].TaskScreenName];
         // 未提出のときresult === undefined
         if (result) {
@@ -97,10 +110,10 @@ $(function () {
             myScore = result.Score;
           }
           // 赤い括弧内の数字
-          if (result.Score === 0) {
-            avePenalty += result.Failure;
-          } else {
-            avePenalty += result.Penalty;
+          var penalty = result.Score === 0 ? result.Failure : result.Penalty;
+          avePenalty += penalty;
+          if (penalty > 0) {
+            ratioPenalty++;
           }
           if (maxScore < result.Score) {
             maxScore = result.Score;
@@ -121,10 +134,13 @@ $(function () {
       myScore /= 100;
       maxScore /= 100;
       avePenalty /= vueStandings.tries[i];
+      ratioPenalty /= vueStandings.tries[i];
+      ratioPenalty *= 100;
 
       $('#acsa-table > tbody > tr:eq(' + i + ') > td:eq(1)').text(myScore >= 0 ? myScore.toFixed() : "-");
       $('#acsa-table > tbody > tr:eq(' + i + ') > td:eq(4)').text(avePenalty.toFixed(2));
-      var canvas = $('#acsa-table > tbody > tr:eq(' + i + ') > td:eq(5) > canvas')[0];
+      $('#acsa-table > tbody > tr:eq(' + i + ') > td:eq(5)').text(ratioPenalty.toFixed(2) + "%");
+      var canvas = $('#acsa-table > tbody > tr:eq(' + i + ') > td:eq(6) > canvas')[0];
       if (canvas.getContext) {
         var context = canvas.getContext('2d');
         for (let k = 0; k < 8; k++) {
