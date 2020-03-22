@@ -86,7 +86,7 @@ $(function () {
       // トップの得点を満点とみなす
       var maxScore = -1;
       var myScore = -1;
-      // 提出者数 / ペナルティ数
+      // ペナルティ数 / 提出者数
       var avePenalty = 0;
       var rates = [];
       for (let j = 0; j < data.length; j++) {
@@ -135,5 +135,5 @@ $(function () {
         }
       }
     }
-  }, 1000);
+  }, 5000);
 });
