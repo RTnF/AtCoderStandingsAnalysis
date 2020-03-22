@@ -1,10 +1,14 @@
 # AtCoderStandingsAnalysis
 
+**念のため、コンテスト中にこのツールから得た情報はSNSに投稿しないでください。**  
 順位表のjsonを集計し、上部にテーブルを追加します。  
 使用は自己責任でお願いいたします。  
+不具合やご要望は[issue](https://github.com/RTnF/AtCoderStandingsAnalysis/issues)か[twitter](https://twitter.com/RTnF_cp)にお願いいたします。  
   
+**As a precaution, please do not post any information obtained from this tool on SNS during the contest.**  
 This script aggregates the JSON of the rank table and add a table at the top.  
 Please use it at your own risk.  
+I welcome your bug reports and requests: [issue](https://github.com/RTnF/AtCoderStandingsAnalysis/issues), [twitter](https://twitter.com/RTnF_cp)
 
 ## 項目
 
