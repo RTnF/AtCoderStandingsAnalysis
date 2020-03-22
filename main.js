@@ -70,13 +70,16 @@ $(function () {
       $('#acsa-table > tbody').append(`
 <tr>
   <td>` + task[i].Assignment + `</td>
-  <td></td>
+  <td>-</td>
   <td>` + vueStandings.ac[i] + ` / ` + vueStandings.tries[i] + `</td>
   <td>` + (isTried ? (vueStandings.ac[i] / vueStandings.tries[i] * 100).toFixed(2) + "%" : "-") + `</td>
-  <td></td>
+  <td>-</td>
   <td><canvas width="` + canvasWidth + `px" height="20px"></canvas></td>
 </tr>
       `);
+      if (!isTried) {
+        continue;
+      }
 
       // トップの得点を満点とみなす
       var maxScore = -1;
@@ -114,21 +117,17 @@ $(function () {
       
       myScore /= 100;
       maxScore /= 100;
-      if (isTried) {
-        avePenalty /= vueStandings.tries[i];
-      }
+      avePenalty /= vueStandings.tries[i];
 
       $('#acsa-table > tbody > tr:eq(' + i + ') > td:eq(1)').text(myScore >= 0 ? myScore.toFixed() : "-");
-      $('#acsa-table > tbody > tr:eq(' + i + ') > td:eq(4)').text(isTried ? avePenalty.toFixed(2) : "-");
-      if (isTried) {
-        var canvas = $('#acsa-table > tbody > tr:eq(' + i + ') > td:eq(5) > canvas')[0];
-        if (canvas.getContext) {
-          var context = canvas.getContext('2d');
-          for (let k = 0; k < 8; k++) {
-            context.fillStyle = cols[k];
-            var x = Math.round(countLower(rates, threshold[k]) / rates.length * canvasWidth);
-            context.fillRect(x, 0, canvasWidth - x, 20);
-          }
+      $('#acsa-table > tbody > tr:eq(' + i + ') > td:eq(4)').text(avePenalty.toFixed(2));
+      var canvas = $('#acsa-table > tbody > tr:eq(' + i + ') > td:eq(5) > canvas')[0];
+      if (canvas.getContext) {
+        var context = canvas.getContext('2d');
+        for (let k = 0; k < 8; k++) {
+          context.fillStyle = cols[k];
+          var x = Math.round(countLower(rates, threshold[k]) / rates.length * canvasWidth);
+          context.fillRect(x, 0, canvasWidth - x, 20);
         }
       }
     }
