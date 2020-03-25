@@ -23,6 +23,11 @@ I welcome your bug reports and requests: [issue](https://github.com/RTnF/AtCoder
 
 ### v0
 
+#### v0.1.2
+
+- 表の更新トリガーをsetIntervalからvm.$watchに変更
+- 表のpaddingを狭く(8 -> 4 px)
+
 #### v0.1.1
 
 - 内部レートでNaNが発生していたのを修正
