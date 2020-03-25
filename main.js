@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         AtCoderStandingsAnalysis
 // @namespace    https://github.com/RTnF/AtCoderStandingsAnalysis
-// @version      0.1.1
+// @version      0.1.2
 // @description  順位表のjsonを集計し、上部にテーブルを追加します。
 // @author       RTnF
 // @match        https://atcoder.jp/*standings*
@@ -41,6 +41,11 @@ function innerRating(rate, comp) {
 $(function () {
   'use strict';
 
+  const cols = ["#808080", "#804000", "#008000", "#00C0C0", "#0000FF", "#C0C000", "#FF8000", "#FF0000"];
+  const threshold = [-10000, 400, 800, 1200, 1600, 2000, 2400, 2800];
+  const canvasWidth = 250;
+  const canvasHeight = 25;
+
   // 表のヘッダーを先頭に追加する
   $('#vue-standings').prepend(`
 <div>
@@ -63,32 +68,31 @@ $(function () {
   `);
 
   // 表の更新
-  setInterval(function () {
+  vueStandings.$watch('standings', function (newVal, oldVal) {
+    if (!newVal) {
+      return;
+    }
     var data;
-    var task = vueStandings.standings.TaskInfo;
+    var task = newVal.TaskInfo;
     if (vueStandings.filtered) {
       data = vueStandings.filteredStandings;
     } else {
-      data = vueStandings.standings.StandingsData;
+      data = newVal.StandingsData;
     }
-    const cols = ["#808080", "#804000", "#008000", "#00C0C0", "#0000FF", "#C0C000", "#FF8000", "#FF0000"];
-    const threshold = [-10000, 400, 800, 1200, 1600, 2000, 2400, 2800];
-    const canvasWidth = 250;
-    const canvasHeight = 20;
 
     $('#acsa-table > tbody').empty();
     for (let i = 0; i < task.length; i++) {
       var isTried = vueStandings.tries[i] > 0;
       $('#acsa-table > tbody').append(`
-<tr>
-  <td>` + task[i].Assignment + `</td>
-  <td>-</td>
-  <td>` + vueStandings.ac[i] + ` / ` + vueStandings.tries[i] + `</td>
-  <td>` + (isTried ? (vueStandings.ac[i] / vueStandings.tries[i] * 100).toFixed(2) + "%" : "-") + `</td>
-  <td>-</td>
-  <td>-</td>
-  <td><canvas width="` + canvasWidth + `px" height="` + canvasHeight +`px"></canvas></td>
-</tr>
+  <tr>
+  <td style="padding: 4px;">` + task[i].Assignment + `</td>
+  <td style="padding: 4px;">-</td>
+  <td style="padding: 4px;">` + vueStandings.ac[i] + ` / ` + vueStandings.tries[i] + `</td>
+  <td style="padding: 4px;">` + (isTried ? (vueStandings.ac[i] / vueStandings.tries[i] * 100).toFixed(2) + "%" : "-") + `</td>
+  <td style="padding: 4px;">-</td>
+  <td style="padding: 4px;">-</td>
+  <td style="padding: 4px;"><canvas style="vertical-align: middle;" width="` + canvasWidth + `px" height="` + canvasHeight +`px"></canvas></td>
+  </tr>
       `);
       if (!isTried) {
         continue;
@@ -128,16 +132,18 @@ $(function () {
           }
         }
       }
-
       // 正解者の内部レート配列を作成する
-      for (let j = 0; j < data.length; j++) {
-        if (data[j].Competitions > 0
-        &&  data[j].TaskResults[task[i].TaskScreenName]
-        &&  data[j].TaskResults[task[i].TaskScreenName].Score === maxScore) {
-          rates.push(innerRating(Math.max(data[j].Rating, 1), data[j].Competitions));
+      // 初出場はカウントしない
+      if (maxScore > 0) {
+        for (let j = 0; j < data.length; j++) {
+          if (data[j].Competitions > 0
+          &&  data[j].TaskResults[task[i].TaskScreenName]
+          &&  data[j].TaskResults[task[i].TaskScreenName].Score === maxScore) {
+            rates.push(innerRating(Math.max(data[j].Rating, 1), data[j].Competitions));
+          }
         }
+        rates.sort(function (a, b) { return a - b; });
       }
-      rates.sort(function (a, b) { return a - b; });
 
       myScore /= 100;
       maxScore /= 100;
@@ -148,16 +154,19 @@ $(function () {
       $('#acsa-table > tbody > tr:eq(' + i + ') > td:eq(1)').text(myScore >= 0 ? myScore.toFixed() : "-");
       $('#acsa-table > tbody > tr:eq(' + i + ') > td:eq(4)').text(avePenalty.toFixed(2));
       $('#acsa-table > tbody > tr:eq(' + i + ') > td:eq(5)').text(ratioPenalty.toFixed(2) + "%");
-      var canvas = $('#acsa-table > tbody > tr:eq(' + i + ') > td:eq(6) > canvas')[0];
-      if (canvas.getContext) {
-        var context = canvas.getContext('2d');
-        for (let k = 0; k < 8; k++) {
-          context.fillStyle = cols[k];
-          // 色の境界から右端までの矩形描画
-          var x = Math.round(countLower(rates, threshold[k]) / rates.length * canvasWidth);
-          context.fillRect(x, 0, canvasWidth - x, canvasHeight);
+      if (maxScore > 0) {
+        var canvas = $('#acsa-table > tbody > tr:eq(' + i + ') > td:eq(6) > canvas')[0];
+        if (canvas.getContext) {
+          var context = canvas.getContext('2d');
+          for (let k = 0; k < 8; k++) {
+            context.fillStyle = cols[k];
+            // 色の境界から右端までの矩形描画
+            var x = Math.round(countLower(rates, threshold[k]) / rates.length * canvasWidth);
+            context.fillRect(x, 0, canvasWidth - x, canvasHeight);
+          }
         }
       }
     }
-  }, 5000);
+  }, {deep: true, immediate: true})
 });
+
