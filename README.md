@@ -23,6 +23,11 @@ I welcome your bug reports and requests: [issue](https://github.com/RTnF/AtCoder
 
 ### v0
 
+#### v0.1.3
+
+- ac-predictorとの干渉を解消(thead > trを消去)
+- 内部レートを固定幅に
+
 #### v0.1.2
 
 - 表の更新トリガーをsetIntervalからvm.$watchに変更

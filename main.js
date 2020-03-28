@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         AtCoderStandingsAnalysis
 // @namespace    https://github.com/RTnF/AtCoderStandingsAnalysis
-// @version      0.1.2
+// @version      0.1.3
 // @description  順位表のjsonを集計し、上部にテーブルを追加します。
 // @author       RTnF
 // @match        https://atcoder.jp/*standings*
@@ -46,20 +46,11 @@ $(function () {
   const canvasWidth = 250;
   const canvasHeight = 25;
 
-  // 表のヘッダーを先頭に追加する
+  // 表を先頭に追加
   $('#vue-standings').prepend(`
 <div>
   <table id="acsa-table" class="table table-bordered table-hover th-center td-center td-middle">
     <thead>
-    <tr>
-      <th>問題</th>
-      <th>得点</th>
-      <th>人数</th>
-      <th>正解率</th>
-      <th>平均ペナ</th>
-      <th>ペナ率</th>
-      <th>レート</th>
-    </tr>
     </thead>
     <tbody>
     </tbody>
@@ -81,18 +72,29 @@ $(function () {
     }
 
     $('#acsa-table > tbody').empty();
+    $('#acsa-table > tbody').append(`
+<tr style="font-weight: bold;">
+  <td>問題</td>
+  <td>得点</td>
+  <td>人数</td>
+  <td>正解率</td>
+  <td>平均ペナ</td>
+  <td>ペナ率</td>
+  <td>内部レート</td>
+</tr>
+    `);
     for (let i = 0; i < task.length; i++) {
       var isTried = vueStandings.tries[i] > 0;
       $('#acsa-table > tbody').append(`
-  <tr>
+<tr>
   <td style="padding: 4px;">` + task[i].Assignment + `</td>
   <td style="padding: 4px;">-</td>
   <td style="padding: 4px;">` + vueStandings.ac[i] + ` / ` + vueStandings.tries[i] + `</td>
   <td style="padding: 4px;">` + (isTried ? (vueStandings.ac[i] / vueStandings.tries[i] * 100).toFixed(2) + "%" : "-") + `</td>
   <td style="padding: 4px;">-</td>
   <td style="padding: 4px;">-</td>
-  <td style="padding: 4px;"><canvas style="vertical-align: middle;" width="` + canvasWidth + `px" height="` + canvasHeight +`px"></canvas></td>
-  </tr>
+  <td style="padding: 4px; width: ` + canvasWidth + `px;"><canvas style="vertical-align: middle;" width="` + canvasWidth + `px" height="` + canvasHeight +`px"></canvas></td>
+</tr>
       `);
       if (!isTried) {
         continue;
@@ -151,11 +153,11 @@ $(function () {
       ratioPenalty /= vueStandings.tries[i];
       ratioPenalty *= 100;
 
-      $('#acsa-table > tbody > tr:eq(' + i + ') > td:eq(1)').text(myScore >= 0 ? myScore.toFixed() : "-");
-      $('#acsa-table > tbody > tr:eq(' + i + ') > td:eq(4)').text(avePenalty.toFixed(2));
-      $('#acsa-table > tbody > tr:eq(' + i + ') > td:eq(5)').text(ratioPenalty.toFixed(2) + "%");
+      $('#acsa-table > tbody > tr:eq(' + (i+1) + ') > td:eq(1)').text(myScore >= 0 ? myScore.toFixed() : "-");
+      $('#acsa-table > tbody > tr:eq(' + (i+1) + ') > td:eq(4)').text(avePenalty.toFixed(2));
+      $('#acsa-table > tbody > tr:eq(' + (i+1) + ') > td:eq(5)').text(ratioPenalty.toFixed(2) + "%");
       if (maxScore > 0) {
-        var canvas = $('#acsa-table > tbody > tr:eq(' + i + ') > td:eq(6) > canvas')[0];
+        var canvas = $('#acsa-table > tbody > tr:eq(' + (i+1) + ') > td:eq(6) > canvas')[0];
         if (canvas.getContext) {
           var context = canvas.getContext('2d');
           for (let k = 0; k < 8; k++) {
