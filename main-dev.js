@@ -45,8 +45,16 @@ $(function () {
     }
     return arr2;
   }
+
+  // http://yucatio.hatenablog.com/entry/2020/02/06/085930
+  // ([1, 2], [3, 4]) -> [[1, 3], [2, 4]]
+  function zip(...arrays) {
+    const length = Math.min(...(arrays.map(arr => arr.length)))
+    return new Array(length).fill().map((_, i) => arrays.map(arr => arr[i]))
+  }
   
-  // 極端な値にしない
+  // https://github.com/kenkoooo/AtCoderProblems/blob/56a860e53eae2cfcb422a08a0f05a9fe1299a20e/lambda-functions/time-estimator/function.py
+  // safe_*は、極端な値を避ける
   function safe_log(x) {
     return Math.log(Math.max(x, 10. ** -50));
   }
@@ -54,14 +62,9 @@ $(function () {
   function safe_sigmoid(x) {
     return 1. / (1. + Math.exp(Math.min(-x, 300)));
   }
-
-  // http://yucatio.hatenablog.com/entry/2020/02/06/085930
-  function zip(...arrays) {
-    const length = Math.min(...(arrays.map(arr => arr.length)))
-    return new Array(length).fill().map((_, i) => arrays.map(arr => arr[i]))
-  }
   
-  // https://github.com/kenkoooo/AtCoderProblems/blob/56a860e53eae2cfcb422a08a0f05a9fe1299a20e/lambda-functions/time-estimator/function.py
+  // 2パラメータIRT
+  // TODO: AGC-Aのための3パラメータIRT
   function fit_2plm_irt(xs, ys) {
     let iter_n = Math.max(Math.floor(100000 / xs.length), 1);
     
