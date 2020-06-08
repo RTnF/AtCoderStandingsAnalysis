@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         AtCoderStandingsAnalysis-dev
 // @namespace    https://github.com/RTnF/AtCoderStandingsAnalysis
-// @version      0.1.4
+// @version      0.2.0
 // @description  順位表のjsonを集計し、上部にテーブルを追加します。
 // @author       RTnF
 // @match        https://atcoder.jp/*standings*
