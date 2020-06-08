@@ -133,10 +133,18 @@ $(function () {
       throw "rate <= 0";
     }
     if (ret <= 400) {
-      ret = 400 * (1 - Math.log(400 / rate));
+      ret = 400. * (1 - Math.log(400. / rate));
     }
-    ret += 1200 * (Math.sqrt(1 - (0.81 ** comp)) / (1 - (0.9 ** comp)) - 1) / (Math.sqrt(19) - 1);
+    ret += 1200. * (Math.sqrt(1 - (0.81 ** comp)) / (1 - (0.9 ** comp)) - 1) / (Math.sqrt(19) - 1);
     return ret;
+  }
+  
+  // 換算： Positivise
+  function toPositiveRating(rate) {
+    if (rate <= 400) {
+      return 400. / Math.exp((400. - rate) / 400.);
+    }
+    return rate;
   }
   
   const cols = ["#808080", "#804000", "#008000", "#00C0C0", "#0000FF", "#C0C000", "#FF8000", "#FF0000"];
@@ -274,7 +282,7 @@ $(function () {
       $('#acsa-table > tbody > tr:eq(' + (i + 1) + ') > td:eq(4)').text(avePenalty.toFixed(2));
       $('#acsa-table > tbody > tr:eq(' + (i + 1) + ') > td:eq(5)').text(ratioPenalty.toFixed(2) + "%");
       if (maxScore > 0) {
-        $('#acsa-table > tbody > tr:eq(' + (i + 1) + ') > td:eq(6)').text(Math.floor(fit_2plm_irt(rates_all, rates_isac)));
+        $('#acsa-table > tbody > tr:eq(' + (i + 1) + ') > td:eq(6)').text(Math.floor(toPositiveRating(fit_2plm_irt(rates_all, rates_isac))));
         let canvas = $('#acsa-table > tbody > tr:eq(' + (i + 1) + ') > td:eq(7) > canvas')[0];
         if (canvas.getContext) {
           let context = canvas.getContext('2d');
