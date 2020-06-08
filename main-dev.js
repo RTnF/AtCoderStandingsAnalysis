@@ -7,7 +7,7 @@
 // @match        https://atcoder.jp/*standings*
 // @exclude      https://atcoder.jp/*standings/json
 // @grant        none
-// @license      CC0-1.0
+// @license      MIT
 // ==/UserScript==
 
 $(function () {
