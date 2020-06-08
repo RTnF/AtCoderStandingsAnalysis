@@ -12,7 +12,7 @@ I welcome your bug reports and requests: [issue](https://github.com/RTnF/AtCoder
 
 ## スクリーンショット
 
-![ScreenShot 0.2.0dev](https://user-images.githubusercontent.com/50510242/84002117-de718880-a9a2-11ea-9ec5-ef91272d61d0.png)
+![ScreenShot 0.2.0dev](https://user-images.githubusercontent.com/50510242/84002348-41631f80-a9a3-11ea-9c43-6ed495b7e1f8.png)
 
 ## 項目
 
