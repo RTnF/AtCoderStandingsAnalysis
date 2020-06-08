@@ -10,6 +10,10 @@ This script aggregates the JSON of a rank table and add a table at the top.
 Please use it at your own risk.  
 I welcome your bug reports and requests: [issue](https://github.com/RTnF/AtCoderStandingsAnalysis/issues), [twitter](https://twitter.com/RTnF_cp)
 
+## スクリーンショット
+
+![ScreenShot 0.2.0dev](https://user-images.githubusercontent.com/50510242/84002117-de718880-a9a2-11ea-9ec5-ef91272d61d0.png)
+
 ## 項目
 
 - 得点：自分の得点
