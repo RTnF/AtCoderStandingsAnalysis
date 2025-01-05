@@ -4,6 +4,6 @@
  */
 const config = {
   semi: true,
-}
+};
 
-export default config
+export default config;
