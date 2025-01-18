@@ -1,9 +1,12 @@
 import { defineConfig } from "vite";
 import monkey from "vite-plugin-monkey";
+import tsconfigPaths from "vite-tsconfig-paths";
 
 // https://vitejs.dev/config/
+/** @type {import('vite').UserConfig} */
 export default defineConfig({
   plugins: [
+    tsconfigPaths(),
     monkey({
       entry: "src/main.ts",
       userscript: {
