@@ -34,5 +34,6 @@ declare global {
     tries: number[];
     ac: number[];
     userScreenName: string; // ログイン中のユーザ
+    contestScreenName: string; // コンテストID ("abc111" など)
   };
 }

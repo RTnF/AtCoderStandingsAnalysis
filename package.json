@@ -19,5 +19,8 @@
     "@types/bun": "latest",
     "vite-tsconfig-paths": "^5.1.4"
   },
-  "module": "index.ts"
+  "module": "index.ts",
+  "dependencies": {
+    "chart.js": "^4.4.7"
+  }
 }
